@@ -1,7 +1,7 @@
 # Membrane POC Constitution
 
-Version: 1.0.0
-Ratified: 2026-10-07
+Version: 1.1.0
+Ratified: 2026-10-07; amended to 1.1.0 the same day (Art. VIII wording — see Amendment record)
 Scope: every spec under `specs/`. This document outranks specs and plans.
 
 The project's only defensible claim is *a private, trust-scoped curation membrane you own*.
@@ -111,13 +111,20 @@ frozen fixture, with deltas against the declared baselines. No merge without the
 
 ## VIII. Local inference only
 
-**Rule.** The default path performs no outbound model API call. Feature extraction runs against a
-local Ollama endpoint.
+**Rule.** The default path performs no outbound model API call. All inference runs on the local
+machine: in-process models (embeddings, classical classifiers, deterministic feature extractors) on
+the corpus path, and a local model server (Ollama, when installed) for on-demand rationale generation.
+No sweep pass may depend on a chat-LLM call per item.
 
-**Rationale.** Article I is worthless if the body is POSTed to a hosted model to be scored.
+**Rationale.** Article I is worthless if the body is POSTed to a hosted model to be scored. The
+corpus-path restriction is also a capacity argument: on the reference machine (8-thread CPU, no GPU,
+6 GB free RAM) a 7B chat model costs on the order of 5–15 s per item, putting a 1000-item x 6-arm
+sweep out of reach, while the embedding + lexicon path completes in seconds and is bit-for-bit
+deterministic. See `specs/001-membrane-poc/research.md` §6.
 
 **Enforcement.** Config default plus an integration test that fails if a hosted provider is reachable
-in the default path; egress assertion during the sweep.
+in the default path; egress assertion during the sweep; a sweep-time assertion that the run performed
+zero chat-completion calls.
 
 ---
 
@@ -126,3 +133,9 @@ in the default path; egress assertion during the sweep.
 Amendments bump the version, state the article affected, and record the reason in
 `specs/*/research.md`. Specs cite articles by number. Where a spec and this document conflict,
 this document wins.
+
+## Amendment record
+
+| Version | Article | Reason |
+|---|---|---|
+| 1.1.0 | VIII | 1.0.0 named "a local Ollama endpoint" as the only permitted inference path. Probing the reference machine found no Ollama installed and CPU-only hardware, where per-item chat-LLM extraction cannot meet the eval budget. Reworded to *local inference, in-process models on the corpus path, local server for on-demand rationale*, and added the no-per-item-chat-LLM sweep assertion. Privacy intent unchanged; cost model corrected. See `specs/001-membrane-poc/research.md` §6. |

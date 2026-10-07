@@ -2,8 +2,8 @@
 
 Status: **DRAFT — awaiting ratification.** A ratified spec is frozen except by explicit amendment
 (with a version bump and a note here).
-Version: 0.1.0
-Constitution: 1.0.0 — articles cited as (Art. N).
+Version: 0.2.0 — amended 2026-10-07 after probing the reference machine (FR-3, §10, Q9).
+Constitution: 1.1.0 — articles cited as (Art. N).
 Research: `research.md` (prior art, decision record D1–D5, rejected alternatives).
 
 ---
@@ -79,10 +79,18 @@ trailing slashes. Near-duplicate syndication grouped by content similarity, not 
 *Acceptance:* identical inputs produce identical `item_id` on all five nodes (deterministic, no
 node-local state); duplicate grouping meets the target set in Q3/AC-3.
 
-**FR-3 Local feature extraction.** Via Ollama: topical tags, a short neutral summary, and the raw
-signal for the manipulation axis. Local-only (Art. VIII). Embeddings precomputed and cached by
-`item_id` so the sweep is deterministic.
-*Acceptance:* no outbound call in the default path; identical fixture run yields identical features.
+**FR-3 Local feature extraction.** Split by cost, per Art. VIII (1.1.0):
+- *Corpus path (in-process, no chat LLM):* embeddings from a small local sentence model, plus
+  deterministic lexical/structural features. Precomputed **once** into a cache keyed by `item_id` and
+  read by all five nodes, so the sweep is bit-for-bit reproducible and five nodes never load five
+  models into 6 GB of free RAM.
+- *Interactive path (optional local server):* topical tags and a short neutral summary, generated
+  on demand for items the user actually opens. Degrades gracefully to "no summary" when no local
+  server is installed; never a per-item corpus cost.
+
+*Acceptance:* no outbound call in the default path; identical fixture run yields identical features;
+the sweep reports zero chat-completion calls; corpus-path feature extraction of the full fixture
+completes well inside the §10 budget on the reference machine.
 
 **FR-4 Preference scorer.** Per-node model trained on that node's keep/kill history; calibrated to
 `[0,1]`; inspectable top-k contributing features. Must be usable after the S1 onboarding budget.
@@ -202,6 +210,13 @@ fixture under 5 minutes. Crash-safe vote log — no loss or reordering on restar
 target <= 10 minutes. No hidden network egress except the live feed fetch (FR-14), which is disabled
 during sweeps.
 
+**Reference machine (measured 2026-10-07).** Intel i7-8550U, 8 threads, no GPU, 15 GB RAM (~6 GB
+available), 804 GB free disk, Python 3.12.3, Node 22.22.2. No Ollama, no ML packages installed. These
+numbers set the §10 budgets and forced the FR-3 split: the in-process path fits the budget, per-item
+chat-LLM extraction does not. First install must use CPU-only wheels
+(`--index-url https://download.pytorch.org/whl/cpu`) — the default CUDA wheels are ~2.5 GB for a GPU
+this machine does not have, against a 22 MB-class sentence model that actually does the work.
+
 ## 11. Out of scope
 
 Section 4 non-goals, plus: P3 items, multi-circle membership, shared mutable state, mobile, hosting,
@@ -235,3 +250,4 @@ as stated).
 | Q6 | Live feed choice and refresh cadence. | FR-14 |
 | Q7 | Does rationale text ever ship between peers? Default **no** (Art. I). Confirm. | Wire schema |
 | Q8 | Manipulation feature list, frozen before the first sweep. | FR-5, comparability across runs |
+| Q9 | Install Ollama at all, or defer the optional on-demand rationale path? The core corpus path is LLM-free either way. | FR-3 packaging; the target Art. VIII enforcement test points at |

@@ -34,5 +34,7 @@ specs/001-membrane-poc/
 ratified and Q1–Q8 in `spec.md` §13 are resolved — spec errors are cheap to fix, plan errors are not.
 
 Ratified decisions (2026-10-07): Python core + TypeScript web UI; 5-node demo **and** eval harness;
-Ollama only; five local processes with their own SQLite over a filesystem/localhost bus; frozen fixture
-for eval plus one live feed for the demo.
+**local inference only** — in-process embeddings + deterministic features on the corpus path, Ollama
+optional for on-demand rationale (D3 revised after probing the reference machine; see
+`specs/001-membrane-poc/research.md` §6); five local processes with their own SQLite over a
+filesystem/localhost bus; frozen fixture for eval plus one live feed for the demo.

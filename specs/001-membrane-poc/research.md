@@ -54,7 +54,7 @@ Ratified by the user, 2026-10-07:
 |---|---|---|---|
 | D1 | Runtime | **Python core + TypeScript web UI** | Scorer/eval in Python; two build surfaces, one contract boundary |
 | D2 | POC gate | **5-node demo + eval harness** | Both must exist; neither alone closes the spec |
-| D3 | Model policy | **Ollama only** | Article VIII enforced by default; feature extraction must be local and fast enough to matter |
+| D3 | Model policy | **Local inference only** — revised 2026-10-07 from "Ollama only" after probing the reference machine (see §6) | Art. VIII (1.1.0): in-process embeddings + deterministic features on the corpus path; Ollama optional, for on-demand rationale only |
 | D4 | Peer transport | **5 local processes, own SQLite each, filesystem/localhost bus** | Keeps real serialization, item-identity, and signature bugs in scope; preserves reproducibility |
 | D5 | Corpus | **Frozen fixture for eval + one live RSS feed for demo** | Sweep is reproducible and falsifiable; demo shows real friction |
 
@@ -88,3 +88,40 @@ Carried as Q1–Q8 in `spec.md` §13. Ranking by blocking power:
    fixture's known duplicate groups.
 5. **Q8 manipulation feature list** — freeze before first sweep, or the baseline table is not comparable
    across runs.
+
+---
+
+## 6. Reference machine probe (2026-10-07)
+
+Measured, not assumed: Intel i7-8550U, 8 threads, **no GPU**, 15 GB RAM (~6 GB available), 804 GB free
+disk, Python 3.12.3, Node 22.22.2, pip 24.0. `ollama` is **not installed**; `bun` is absent;
+`numpy`, `sklearn`, `sentence_transformers`, `torch`, `transformers`, `fastapi`, `uvicorn`, `httpx`,
+`pydantic` are **all missing**.
+
+Consequences, in order of importance:
+
+1. **Per-item chat-LLM extraction is not affordable here.** A 7B model on this CPU runs at roughly
+   3–8 tok/s generation; an item's extraction is on the order of 5–15 s. Across a 1000-item fixture x
+   6 arms that is hours per pass and hours-times-configs for the ablations, against a 10-minute sweep
+   budget. **Article VIII as written ("runs against a local Ollama endpoint") was unenforceable as
+   specified** and has been amended to 1.1.0.
+2. **The novel axis does not need a chat LLM anyway.** The manipulation axis is lexical and structural
+   (curiosity-gap openers, urgency/scarcity markers, caps and punctuation intensity, CTA density,
+   outrage lexicon) — pure Python, deterministic, effectively free. The preference axis is
+   embeddings + a classical classifier trained on keep/kill votes — a 22 MB-class sentence encoder on
+   8 threads handles the whole fixture in seconds. **The POC's claim survives without a large model.**
+3. **Precompute once, share across nodes.** Five nodes each loading a model into 6 GB of free RAM is
+   the failure mode; FR-3's determinism requirement and this constraint agree on the same design: one
+   embedding cache keyed by `item_id`, read by all five nodes.
+4. **First install must pin CPU-only wheels** (`--index-url https://download.pytorch.org/whl/cpu`).
+   The default CUDA wheels are ~2.5 GB for a GPU this machine does not have.
+5. **Honesty about the demo.** "Local LLM" on this hardware means a small encoder plus optional
+   on-demand generation, not a resident 7B judge. The README should say so rather than implying
+   otherwise.
+
+## 7. Amendment record (mirrors the constitution)
+
+| Version | Article | Reason |
+|---|---|---|
+| 1.1.0 | VIII | §6 items 1 and 2. Privacy intent unchanged; the cost model was wrong. Wording moved from "a local Ollama endpoint" to local inference with in-process models on the corpus path, plus a sweep-time assertion of zero chat-completion calls. |
+
