@@ -5,3 +5,11 @@ node_modules/
 data/
 .eval-out/
 dist/
+
+# Captured corpus and derived caches: reproducible locally from fixtures/feeds.yaml, and the
+# feed-provided `summary` field is third-party text that should not live in the repo.
+# fixtures/capture_meta.json IS committed — it records the window, source counts and feed health.
+fixtures/corpus.jsonl
+fixtures/corpus_groups.json
+fixtures/embeddings*.npz
+fixtures/*.labels.jsonl

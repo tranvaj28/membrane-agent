@@ -1,0 +1,55 @@
+{
+  "captured_at": "2026-10-07T20:39:04+00:00",
+  "per_feed": [
+    {
+      "name": "hackernews",
+      "url": "https://hnrss.org/frontpage",
+      "status": "ok",
+      "raw": 20
+    },
+    {
+      "name": "arstechnica",
+      "url": "https://feeds.arstechnica.com/arstechnica/index",
+      "status": "ok",
+      "raw": 20
+    },
+    {
+      "name": "theverge",
+      "url": "https://www.theverge.com/rss/index.xml",
+      "status": "ok",
+      "raw": 10
+    },
+    {
+      "name": "bbc-world",
+      "url": "https://feeds.bbci.co.uk/news/world/rss.xml",
+      "status": "ok",
+      "raw": 21
+    },
+    {
+      "name": "dailymail",
+      "url": "https://www.dailymail.co.uk/articles.rss",
+      "status": "ok",
+      "raw": 179
+    },
+    {
+      "name": "jimrutt-substack",
+      "url": "https://jimrutt.substack.com/feed",
+      "status": "error: HTTPStatusError: Client error '403 Forbidden' for url 'https://jimrutt.substack.com/feed'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403",
+      "raw": 0
+    }
+  ],
+  "totals": {
+    "raw_entries": 250,
+    "unique_items": 250,
+    "duplicate_groups": 0,
+    "largest_group": 1
+  },
+  "per_source": {
+    "arstechnica": 20,
+    "bbc-world": 21,
+    "dailymail": 179,
+    "hackernews": 20,
+    "theverge": 10
+  },
+  "max_body_chars": 4000
+}

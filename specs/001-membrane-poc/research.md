@@ -125,3 +125,45 @@ Consequences, in order of importance:
 |---|---|---|
 | 1.1.0 | VIII | §6 items 1 and 2. Privacy intent unchanged; the cost model was wrong. Wording moved from "a local Ollama endpoint" to local inference with in-process models on the corpus path, plus a sweep-time assertion of zero chat-completion calls. |
 
+---
+
+## 8. Corpus capture probe — measured, 2026-10-07, single pass
+
+Ran `tools/capture.py` against the default feed list. What came back corrects three assumptions that
+were already written into spec §8 and FR-1/FR-3.
+
+| Measurement | Value |
+|---|---|
+| Unique items | **250** (spec §8 target: 500–1500) |
+| Source mix | dailymail **179 (72%)**, bbc 21, ars 20, hackernews 20, theverge 10 |
+| Failed feed | `jimrutt.substack.com/feed` → **403 Forbidden** (UA/Cloudflare); needs a fix or a drop |
+| Duplicate groups found | **0**; only 5 hosts appear more than once |
+| Records with an empty summary | 0 of 250 |
+| Summary length p10 / p50 / p90 | **94 / 151 / 272 chars** |
+
+Consequences, each one a correction rather than an observation:
+
+1. **Live capture cannot exercise AC-3.** Zero duplicate groups in 250 items, and only five repeated
+   hosts. Cross-publisher syndication is simply rare in a single snapshot, so duplicate-grouping
+   accuracy must be measured on the hand-built duplicate set already required by §8 ("adversarial
+   fixtures") — not hoped for from the corpus.
+2. **Feed summaries are snippets, not bodies.** p90 is 272 characters. Since `content_key` weights the
+   title 3:1, the key is title-dominated in practice — good for syndication detection, but it means a
+   *body-level* manipulation axis (CTA density, capitalization ratio, punctuation intensity) has
+   roughly 25 words to work with. **The manipulation axis is therefore title/lede-level unless
+   article bodies are fetched**, which brings per-host etiquette and licensing into Q4. This is a
+   ratification decision, not an implementation detail: it changes what the novel axis can claim.
+3. **Source imbalance is severe.** 72% of the corpus from one bait-dense feed. Labeling and the §9
+   arms table on that distribution would measure the feed list, not the membrane. Ingest needs a
+   per-source quota *before* labeling, and FR-1 needs an accumulate-over-window mode (append + dedup
+   by `item_id`), because the §8 target is unreachable in one pass.
+4. **`hnrss.org` front-page entries link to the article, not the HN item page** (e.g. `github.com`,
+   `fiveminutesforward.com`). Assumed otherwise; no adapter special-casing is needed, and Hacker News
+   does contribute genuine cross-source overlap.
+5. **The corpus path is cheap, measured rather than predicted** (`tools/bench_embeddings.py`):
+   model2vec `potion-base-8M`, 256-dim, **4497 items/s**, bit-identical across two encode passes,
+   459 MB peak RSS, 7.65 s one-off model load. A 1500-item fixture embeds in ~0.33 s. Against a chat
+   LLM at 5–15 s/item for the same fixture (~2–6 hours), this is the evidence behind the 1.1.0
+   amendment to Article VIII.
+
+

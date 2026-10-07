@@ -1,0 +1,29 @@
+# Fixture corpus feed list (spec Q4 default).
+#
+# Chosen for axis coverage, not for size:
+#   * high-signal   : Ars, The Verge, BBC World  -> the "keep" end
+#   * high-volume   : Hacker News front page     -> mixed, churn-heavy
+#   * bait-dense    : Daily Mail                 -> the "kill" end, and the A1/A2 adversarial material
+#   * long-form     : Jim Rutt's Substack        -> topically coherent with the source idea
+#
+# The bait-dense feed is load-bearing: a corpus of only good feeds cannot demonstrate that the
+# manipulation axis earns its place (spec AC-2, arms table).
+feeds:
+  - name: hackernews
+    url: https://hnrss.org/frontpage
+    kind: aggregator
+  - name: arstechnica
+    url: https://feeds.arstechnica.com/arstechnica/index
+    kind: high-signal
+  - name: theverge
+    url: https://www.theverge.com/rss/index.xml
+    kind: high-signal
+  - name: bbc-world
+    url: https://feeds.bbci.co.uk/news/world/rss.xml
+    kind: high-signal
+  - name: dailymail
+    url: https://www.dailymail.co.uk/articles.rss
+    kind: bait-dense
+  - name: jimrutt-substack
+    url: https://jimrutt.substack.com/feed
+    kind: long-form

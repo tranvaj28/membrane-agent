@@ -1,0 +1,31 @@
+[project]
+name = "membrane"
+version = "0.0.1"
+description = "Membrane POC — local-first curation membrane (spec 001, constitution 1.1.0)"
+requires-python = ">=3.11"
+
+# Corpus-path inference is in-process and CPU-only on purpose (constitution Art. VIII, 1.1.0).
+# No torch: a static-embedding model plus classical classifiers cover the corpus path, and the
+# reference machine has no GPU. See specs/001-membrane-poc/research.md §6.
+dependencies = [
+    "numpy>=2.0",
+    "scikit-learn>=1.4",
+    "feedparser>=6.0",
+    "httpx>=0.27",
+    "PyYAML>=6.0",
+    "model2vec>=0.3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
