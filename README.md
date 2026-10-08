@@ -28,6 +28,21 @@ specs/001-membrane-poc/
   data-model.md                      # PROPOSED node-local storage
   contracts/                         # PROPOSED event, exchange and classifier interfaces
   tasks.md                           # not written; post-approval phase
+## Architecture diagram
+
+```mermaid
+flowchart LR
+    RSS[RSS / frozen fixture] --> IDS[URL identity + duplicate grouping]
+    IDS --> CACHE[shared read‑only feature cache]
+    CACHE --> N1[node A: own SQLite, model, rules, key]
+    CACHE --> N2[node B–E: separate SQLite, models, rules, keys]
+    N1 <-->|signed ID + bounded metadata events| N2
+    N1 --> UI[TypeScript UI]
+    N2 --> UI
+    CACHE --> EVAL[offline sweep (no chat LLM)]
+    N1 --> EVAL
+    N2 --> EVAL
+```
 ```
 
 ## Phase
