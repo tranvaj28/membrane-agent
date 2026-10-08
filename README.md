@@ -22,19 +22,24 @@ platform-global peer poll (Community Notes). The claim under test here is narrow
 ```
 .specify/memory/constitution.md      # 8 invariants; outranks specs
 specs/001-membrane-poc/
-  spec.md                            # requirements, threat model, eval design  <- you are here
-  research.md                        # prior art, deltas, decision record D1-D5
-  plan.md                            # (after ratification)
-  data-model.md, contracts/, tasks.md
+  spec.md                            # DRAFT requirements and acceptance criteria
+  research.md                        # prior art, measured probes, decision record D1–D5
+  plan.md                            # PROPOSED architecture; pending user corrections
+  data-model.md                      # PROPOSED node-local storage
+  contracts/                         # PROPOSED event, exchange and classifier interfaces
+  tasks.md                           # not written; post-approval phase
 ```
 
 ## Phase
 
-**Spec ratification.** `spec.md` is DRAFT. `plan.md` and `tasks.md` are written only after the spec is
-ratified and Q1–Q8 in `spec.md` §13 are resolved — spec errors are cheap to fix, plan errors are not.
+**Planning review.** `spec.md` remains DRAFT; `plan.md`, `data-model.md` and `contracts/` are
+proposals, not ratification or permission to implement. The adversarial reviewer is paused until the
+user selects its model. `tasks.md` and all runtime implementation are held until corrections and
+explicit go-ahead. Planning gate P1 requires an Article I amendment before any event code may ship;
+see `plan.md` §2 for the other decisions and `spec.md` §13 for Q1–Q9.
 
-Ratified decisions (2026-10-07): Python core + TypeScript web UI; 5-node demo **and** eval harness;
-**local inference only** — in-process embeddings + deterministic features on the corpus path, Ollama
-optional for on-demand rationale (D3 revised after probing the reference machine; see
-`specs/001-membrane-poc/research.md` §6); five local processes with their own SQLite over a
-filesystem/localhost bus; frozen fixture for eval plus one live feed for the demo.
+User-selected direction (2026-10-07): Python core + TypeScript web UI; 5-node demo **and** eval harness;
+Ollama-only local inference; five local processes with their own SQLite over a filesystem/localhost bus;
+frozen fixture for eval plus one live feed for the demo. The D3 amendment in `research.md` §6
+proposes a local in-process corpus path with optional Ollama; that change still requires user
+approval at plan gate P6.

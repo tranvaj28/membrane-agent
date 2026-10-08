@@ -1,6 +1,6 @@
 # Membrane POC Constitution
 
-Version: 1.1.0
+Version: 1.2.0
 Ratified: 2026-10-07; amended to 1.1.0 the same day (Art. VIII wording — see Amendment record)
 Scope: every spec under `specs/`. This document outranks specs and plans.
 
@@ -139,3 +139,6 @@ this document wins.
 | Version | Article | Reason |
 |---|---|---|
 | 1.1.0 | VIII | 1.0.0 named "a local Ollama endpoint" as the only permitted inference path. Probing the reference machine found no Ollama installed and CPU-only hardware, where per-item chat-LLM extraction cannot meet the eval budget. Reworded to *local inference, in-process models on the corpus path, local server for on-demand rationale*, and added the no-per-item-chat-LLM sweep assertion. Privacy intent unchanged; cost model corrected. See `specs/001-membrane-poc/research.md` §6. |
+| 1.2.0 | I | Add bounded protocol metadata (`version`, `kind`, `author_id`, `seq`, `poll_id`). Keep fixture cache shared read‑only; live embeddings per‑node. |
+| 1.2.0 | V | Change inbox‑identical test: A has no write access to B's SQLite; after stopping A, B changes only via its own ingest or processing already‑received signed events. |
+| 1.2.0 | VIII | Ollama not installed; no on‑demand generation; deterministic reason codes; never fake LLM summary. |

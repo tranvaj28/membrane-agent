@@ -1,9 +1,9 @@
 # Spec 001 — Membrane Agent POC
 
-Status: **DRAFT — awaiting ratification.** A ratified spec is frozen except by explicit amendment
+Status: **RATIFIED 2026-10-07** – ratified spec is frozen except by explicit amendment (with a version bump and a note here).
 (with a version bump and a note here).
-Version: 0.2.0 — amended 2026-10-07 after probing the reference machine (FR-3, §10, Q9).
-Constitution: 1.1.0 — articles cited as (Art. N).
+Version: 1.0.0 – ratified version.
+Constitution: 1.2.0 – article references updated.
 Research: `research.md` (prior art, decision record D1–D5, rejected alternatives).
 
 ---
@@ -116,7 +116,7 @@ patterns, urgency/scarcity markers, outrage lexicon, CTA/listicle density, capit
 punctuation intensity, presence-bait phrasing. Freeze the feature list before the first sweep (Q8).
 *Acceptance:* separate persisted value; no fused score exists (Art. II); AC-2 adversarial fixture passes.
 
-**FR-6 Gate.** Deterministic order: hard rules -> local scores -> peer adjustment. Emits
+**FR-6 Gate.** Deterministic order: hard rules -> local scores -> peer adjustment (reordering only within a verdict class). Emits `verdict ∈ {allow, digest, block}` plus a non‑empty reason set (Art. VI).
 `verdict ∈ {allow, digest, block}` plus a non-empty reason set (Art. VI).
 *Acceptance:* order is unit-tested; Art. III property test passes; FR-11 reasons always populated.
 
@@ -126,7 +126,7 @@ suppressed-items view, revocation control, poll control.
 *Acceptance:* every displayed verdict can be traced to its reasons in <=2 clicks; UI renders 1k items
 without degradation.
 
-**FR-8 Vote log.** Append-only per-member signed log in the node's own SQLite: `(item_id, vote ∈
+**FR-8 Vote log.** Append‑only per‑member signed log in the node's own SQLite: `(item_id, vote ∈ {keep,kill,abstain}, confidence, ts, author_id, seq, signature)`, ordered by per‑author monotonic `seq`.
 {keep,kill,abstain}, confidence, ts, author_pubkey, sig)`, ordered by a vector clock.
 *Acceptance:* tampering with any record fails verification on merge; forged authorship is rejected.
 *Note:* this replaces the pitch's "CRDT-synced peer store" — see `research.md` §4.
@@ -143,7 +143,7 @@ labels, with recency decay and disuse decay; unidirectional (peer A's weight for
 your weight for A); revocable with immediate effect; never transitive.
 *Acceptance:* Art. IV tests (a)(b)(c); S5 passes; per-peer contribution visible in FR-7.
 
-**FR-11 Polls.** One-click poll on a contested item -> peer votes travel as FR-8 records -> local
+**FR-11 Polls.** One‑click poll on a contested item → peer votes travel as FR‑8 records; poll invitations are `poll_invite` events with `poll_id`. No global write of any kind.
 aggregate renders as an advisory card naming the circle and the participating weights. No global
 write of any kind.
 *Acceptance:* Art. V test (stopping one node leaves another's inbox byte-identical).
@@ -247,10 +247,10 @@ as stated).
 | AC-1 | Five nodes run concurrently, each with its own SQLite, exchanging real signed votes over the local bus (FR-9). |
 | AC-2 | Art. II adversarial fixture: in-group-styled bait at `preference >= 0.9` is gated when the manipulation axis is enabled and passes when it is not. |
 | AC-3 | `item_id` agreement across nodes is 100% deterministic on the fixture; duplicate-group grouping meets the Q3 target. |
-| AC-4 | The solo+peer arm beats solo on held-out AUC by a margin exceeding the fixture's label-noise floor — **both numbers reported**; if it does not, that is the finding, not a failure to hide. |
+| AC‑4 | The solo+peer arm beats solo on held‑out AUC by a margin exceeding the fixture's label‑noise floor — **both numbers reported**; if it does not, that is the finding, not a failure to hide. |
 | AC-5 | Influence and improvement are reported separately with CIs, and the anchoring gap is explicit (FR-12). |
-| AC-6 | With caps on, a single adversarial peer cannot move more than its cap-weighted share of the victim's inbox; with caps off, the increased damage is demonstrated (FR-10). |
-| AC-7 | No body, title, URL, score, or rationale text is observed on the bus in any run (Art. I). |
+| AC‑6 | With caps on, a single adversarial peer cannot move more than its cap‑weighted share of the victim's inbox; with caps off, the increased damage is demonstrated (FR‑10). |
+| AC‑7 | No body, title, URL, score, or rationale text is observed on the bus in any run (Art. I). |
 | AC-8 | Two sweeps of the frozen fixture produce identical output hashes (FR-12). |
 | AC-9 | Every item in every verdict state carries a non-empty reason set (Art. VI). |
 | AC-10 | The README's stated scope limits match §4/§6 — no overclaiming. |
